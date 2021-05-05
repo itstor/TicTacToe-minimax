@@ -1,7 +1,11 @@
 #include <graphics.h>
 #include <iostream>
+#include <math.h>
 
 using namespace std;
+
+const int human = 1;
+const int ai = 2;
 
 void drawBoard(){
     int x = getmaxx();
@@ -33,11 +37,11 @@ bool check3(int a, int b, int c){
 }
 
 int checkWinner(int arr[3][3]){
-    int coutZero = 0;
+    int countZero = 0;
     for (int i = 0; i<3; i++){
         for (int j = 0; j<3; j++){
             if (arr[i][j] > 0){
-                coutZero++;
+                countZero++;
             }
 
             //vertical
@@ -50,7 +54,7 @@ int checkWinner(int arr[3][3]){
             }
             else if (check3(arr[0][0], arr[1][1], arr[2][2]) || check3(arr[2][0], arr[1][1], arr[0][2])){
                 return arr[1][1];
-            } else if(coutZero == 9){
+            } else if(countZero == 9){
                 return 3;
             }
         }
@@ -72,19 +76,69 @@ void drawPlayer(int available[3][3]){
     }
 }
 
-int getPosition(int x, int y, int *xpos, int *ypos){
+void getPosition(int x, int y, int *xpos, int *ypos){
     int width = getmaxx()/3;
     int height = getmaxy()/3;
 
-    for (int i = 1; i<=3; i++){
-        for (int j = 1; j<=3; j++){
-            if(x<=width*j && y<=height*i){
-                *xpos = j;
-                *ypos = i;
-                return 0;
+    *xpos = floor(x/width);
+    *ypos = floor(y/height);
+}
+
+int minimax(int arr[3][3], int depth, bool isMax){
+    int winner = checkWinner(arr);
+    int scores[] = {0, -10, 10, 0};
+    if (winner > 0){
+        return scores[winner];
+    }
+
+    if (isMax){
+        int bestScore = INT_MIN;
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j < 3; j++){
+                if (arr[i][j] == 0){
+                    arr[i][j] == ai;
+                    int score = minimax(arr, depth + 1, false);
+                    arr[i][j] = 0;
+                    bestScore = max(score, bestScore);
+                }
+            }
+        }
+        return bestScore;
+    } else {
+        int bestScore = INT_MAX;
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j < 3; j++){
+                if (arr[i][j] == 0){
+                    arr[i][j] == human;
+                    int score = minimax(arr, depth + 1, true);
+                    arr[i][j] = 0;
+                    bestScore = min(score, bestScore);
+                }
+            }
+        }
+    return bestScore;
+    }
+}
+
+void aimove(int arr[3][3], int *movex, int *movey){
+    int x, y;
+    int bestScore = INT_MIN;
+    for (int i = 0; i < 3; i++){
+        for (int j = 0; j < 3; j++){
+            if (arr[i][j] == 0){
+                arr[i][j] = ai;
+                int score = minimax(arr, 0, false);
+                arr[i][j] = 0;
+                if (score > bestScore){
+                    bestScore = score;
+                    x = i;
+                    y = j;
+                }
             }
         }
     }
+    *movex = x;
+    *movey = y;
 }
 
 
@@ -94,7 +148,7 @@ int main(){
                            {0,0,0},
                            {0,0,0}};
     int xPos, yPos;
-    int currentPlayer = 1;
+    int currentPlayer = human;
     int winner = 0;
 
 
@@ -110,12 +164,17 @@ int main(){
             }
             break;
         }
-        if(ismouseclick(WM_LBUTTONDOWN)){
-            getPosition(mousex(), mousey(), &yPos, &xPos);
-            if (available[xPos-1][yPos-1] == 0)
-                available[xPos-1][yPos-1] = currentPlayer;
-            currentPlayer = currentPlayer==1?2:1;
+        if(ismouseclick(WM_LBUTTONDOWN) && currentPlayer == human){
+            getPosition(mousex(), mousey(), &xPos, &yPos);
+            if (available[yPos][xPos] == 0)
+                available[yPos][xPos] = human;
+            currentPlayer = ai;
             clearmouseclick(WM_LBUTTONDOWN);
+        }
+        if (currentPlayer == ai){
+            aimove(available, &xPos, &yPos);
+            available[yPos][xPos] = ai;
+            currentPlayer = human;
         }
         delay(5);
         cleardevice();

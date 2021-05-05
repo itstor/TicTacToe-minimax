@@ -176,9 +176,10 @@ int main(){
         }
         if(ismouseclick(WM_LBUTTONDOWN) && currentPlayer == human){
             getPosition(mousex(), mousey(), &xPos, &yPos);
-            if (available[yPos][xPos] == 0)
+            if (available[yPos][xPos] == 0){
                 available[yPos][xPos] = human;
-            currentPlayer = ai;
+                currentPlayer = ai;
+            }
             clearmouseclick(WM_LBUTTONDOWN);
         }
         delay(5);

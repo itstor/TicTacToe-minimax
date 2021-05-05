@@ -7,7 +7,7 @@ void drawBoard(){
     int x = getmaxx();
     int y = getmaxy();
 
-    for (int i = 1; i<=3; i++){
+    for (int i = 1; i<3; i++){
         line(x/3*i, 0, x/3*i, getmaxy());
         line(0 ,y/3*i, getmaxx(), y/3*i);
     }
@@ -51,7 +51,7 @@ int checkWinner(int arr[3][3]){
             else if (check3(arr[0][0], arr[1][1], arr[2][2]) || check3(arr[2][0], arr[1][1], arr[0][2])){
                 return arr[1][1];
             } else if(coutZero == 9){
-                return 4;
+                return 3;
             }
         }
     }

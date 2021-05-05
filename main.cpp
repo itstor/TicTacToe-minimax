@@ -92,11 +92,11 @@ int minimax(int arr[3][3], int depth, bool isMax){
     }
 
     if (isMax){
-        int bestScore = INT_MIN;
+        int bestScore = -1000;
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
                 if (arr[i][j] == 0){
-                    arr[i][j] == ai;
+                    arr[i][j] = ai;
                     int score = minimax(arr, depth + 1, false);
                     arr[i][j] = 0;
                     bestScore = max(score, bestScore);
@@ -105,11 +105,11 @@ int minimax(int arr[3][3], int depth, bool isMax){
         }
         return bestScore;
     } else {
-        int bestScore = INT_MAX;
+        int bestScore = 1000;
         for (int i = 0; i < 3; i++){
             for (int j = 0; j < 3; j++){
                 if (arr[i][j] == 0){
-                    arr[i][j] == human;
+                    arr[i][j] = human;
                     int score = minimax(arr, depth + 1, true);
                     arr[i][j] = 0;
                     bestScore = min(score, bestScore);
@@ -122,7 +122,7 @@ int minimax(int arr[3][3], int depth, bool isMax){
 
 void aimove(int arr[3][3], int *movex, int *movey){
     int x, y;
-    int bestScore = INT_MIN;
+    int bestScore = -1000;
     for (int i = 0; i < 3; i++){
         for (int j = 0; j < 3; j++){
             if (arr[i][j] == 0){
@@ -144,6 +144,7 @@ void aimove(int arr[3][3], int *movex, int *movey){
 
 int main(){
     initwindow(300, 300);
+    PLAY:
     int available[3][3] = {{0,0,0},
                            {0,0,0},
                            {0,0,0}};
@@ -162,7 +163,16 @@ int main(){
             case 2: cout << "X Win"; break;
             case 3: cout << "Tie"; break;
             }
-            break;
+            cout << endl;
+            delay(2000);
+            cleardevice();
+            clearmouseclick(WM_LBUTTONDOWN);
+            goto PLAY;
+        }
+        if (currentPlayer == ai){
+            aimove(available, &xPos, &yPos);
+            available[xPos][yPos] = ai;
+            currentPlayer = human;
         }
         if(ismouseclick(WM_LBUTTONDOWN) && currentPlayer == human){
             getPosition(mousex(), mousey(), &xPos, &yPos);
@@ -170,11 +180,6 @@ int main(){
                 available[yPos][xPos] = human;
             currentPlayer = ai;
             clearmouseclick(WM_LBUTTONDOWN);
-        }
-        if (currentPlayer == ai){
-            aimove(available, &xPos, &yPos);
-            available[yPos][xPos] = ai;
-            currentPlayer = human;
         }
         delay(5);
         cleardevice();

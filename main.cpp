@@ -43,7 +43,6 @@ int checkWinner(int arr[3][3]){
             if (arr[i][j] > 0){
                 countZero++;
             }
-
             //vertical
             if (check3(arr[0][i], arr[1][i], arr[2][i])){
                 return arr[0][i];
@@ -151,13 +150,9 @@ int main(){
     int xPos, yPos;
     int currentPlayer = human;
     int winner = 0;
-    int page = 0;
 
 
     while (true){
-        setactivepage(page);
-        setactivepage(1-page);
-        cleardevice();
         drawBoard();
         drawPlayer(available);
         winner = checkWinner(available);
@@ -187,7 +182,7 @@ int main(){
             clearmouseclick(WM_LBUTTONDOWN);
         }
         delay(10);
-        page = 1 - page;
+        cleardevice();
     }
 
     getch();

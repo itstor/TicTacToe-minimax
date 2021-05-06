@@ -151,9 +151,13 @@ int main(){
     int xPos, yPos;
     int currentPlayer = human;
     int winner = 0;
+    int page = 0;
 
 
     while (true){
+        setactivepage(page);
+        setactivepage(1-page);
+        cleardevice();
         drawBoard();
         drawPlayer(available);
         winner = checkWinner(available);
@@ -182,8 +186,8 @@ int main(){
             }
             clearmouseclick(WM_LBUTTONDOWN);
         }
-        delay(5);
-        cleardevice();
+        delay(10);
+        page = 1 - page;
     }
 
     getch();

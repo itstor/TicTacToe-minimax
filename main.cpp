@@ -159,9 +159,9 @@ int main(){
         winner = checkWinner(available);
         if (winner > 0){
             switch(winner){
-            case 1: cout << "O Win"; break;
-            case 2: cout << "X Win"; break;
-            case 3: cout << "Tie"; break;
+            case 1: cout << "IMPOSSIBLE!!"; break;
+            case 2: cout << "HAHAHA YOU LOSE!"; break;
+            case 3: cout << "TIE"; break;
             }
             cout << endl;
             delay(2000);
